@@ -14,7 +14,7 @@ import java.io.*;
  */
 public class PDFTool {
 
-    public static class Watermark extends PdfPageEventHelper {
+    public static final class Watermark extends PdfPageEventHelper {
         Font FONT = new Font(Font.FontFamily.HELVETICA, 30, Font.BOLD, new GrayColor(0.95f));
         private String waterCont;//水印内容
         public Watermark() {
@@ -34,20 +34,6 @@ public class PDFTool {
                             document.getPageSize().getHeight() * 0.5f,
                             180);
         }
-    }
-
-    public static void main(String args[]) {
-//        从命令行读取输入
-//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-//        String path = null;
-//        try {
-//            System.out.print("input image path\n");
-//            path = br.readLine();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-        String outPDFPath = convertImageToPDF("/Users/edz/Desktop/text_image.png");
     }
 
     private static File pdfForImage(String imagePath, String outputPdfFileName) {
@@ -106,14 +92,4 @@ public class PDFTool {
         File pdfFile = pdfForImage(imagePath, inputFileParent + "/" + fileNameWithoutExtension + ".pdf");
         return pdfFile.getPath();
     }
-
-//    /// 转换一组图片成一组pdf（返回pdf的路径）
-//    public static String[] convertImagesToPDFs(String[] imagePaths) {
-//
-//    }
-//
-//    /// 合成一组图片成pdf（返回pdf的路径）
-//    public static String convertImagesToPDF(String[] imagePath) {
-//
-//    }
 }
