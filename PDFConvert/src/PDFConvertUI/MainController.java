@@ -13,8 +13,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.prefs.Preferences;
 
@@ -76,7 +74,7 @@ public class MainController extends Application {
             fileChooser.setInitialDirectory(new File("."));
         }
         fileChooser.getExtensionFilters().addAll(
-            new FileChooser.ExtensionFilter("IMAGE FILES", "*.png", "*.jpg", "*.jpeg")
+            new FileChooser.ExtensionFilter("IMAGE FILES", "*.jpg", "*.png", "*.jpeg")
         );
         return fileChooser;
     }
