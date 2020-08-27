@@ -9,6 +9,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * @author: mayong
@@ -160,15 +161,18 @@ public class PDFConvert {
         if (!isPathValid.equalTo(Error.noError)) return isPathValid;
 
         switch (path) {
-            case Directory:
-                break;
             case File:
-
+                return convertImageFilesToPDF(new String[]{fileOrDirectoryPath}, outputDirectoryPath);
             case Files:
-                break;
+                return convertImageFilesToPDFList(fileOrDirectoryPath.split(","), outputDirectoryPath);
+            case Directory:
+                File[] files = outputDirectory.listFiles();
+
+                String[] filePaths = (String[]) Arrays.stream(files).map((file) -> file.getPath()).toArray();
+                return convertImageFilesToPDF(filePaths, outputDirectoryPath);
         }
 
-        return Error.noError;
+        return Error.convertError;
     }
 
     /**

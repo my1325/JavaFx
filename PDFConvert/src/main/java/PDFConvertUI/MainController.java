@@ -1,10 +1,10 @@
 package PDFConvertUI;
 
+import PDFConvert.PDFConvert;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -38,9 +38,11 @@ public class MainController extends Application {
 
     private Button outputButton = new Button("保存目录");
 
-    private String ouputDirectoryPath = null;
+    private String outputDirectoryPath = null;
 
     private Stage primaryStage = null;
+
+    private ArrayList<File> files = new ArrayList();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -135,17 +137,37 @@ public class MainController extends Application {
         outputButton.setOnAction(event -> {
             File directory = directoryChooser.showDialog(this.primaryStage);
             if (directory != null) {
-                this.ouputDirectoryPath = directory.getPath();
+                this.outputDirectoryPath = directory.getPath();
             }
         });
         return outputButton;
     }
 
     private Button getStartButton() {
+        startButton.setOnAction(event -> {
+            String[] filePathList = (String[]) files.stream().map((file) -> file.getPath()).toArray();
+            PDFConvert convert = new PDFConvert(new PDFConvert.ConvertPath(PDFConvert.ConvertPath.Path.Files, String.join(",", filePathList)));
+            PDFConvert.Error error = convert.convertToDirectoryPath(this.outputDirectoryPath);
+            if (error.equalTo(PDFConvert.Error.noError)) {
+                DialogPane dialogPane = new DialogPane();
+                dialogPane.setContent(new Label("转换成功"));
+                dialogPane.getButtonTypes().add(ButtonType.YES);
+
+                Stage dialogStage = new Stage();
+                dialogStage.setScene(new Scene(dialogPane));
+                dialogStage.show();
+
+                Button button = (Button)dialogPane.lookupButton(ButtonType.YES);
+                button.setOnAction(event1 -> {
+                    dialogStage.close();
+                });
+            }
+        });
         return startButton;
     }
 
     private void handleFiles(List<File> fileList) {
         System.out.println("fileList = " + fileList);
+        files.addAll(fileList);
     }
 }
