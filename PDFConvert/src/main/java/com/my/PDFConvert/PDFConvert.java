@@ -1,4 +1,4 @@
-package PDFConvert;
+package com.my.PDFConvert;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;

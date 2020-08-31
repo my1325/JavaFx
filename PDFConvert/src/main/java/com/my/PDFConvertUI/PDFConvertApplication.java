@@ -1,11 +1,12 @@
-package PDFConvertUI;
+package com.my.PDFConvertUI;
 
-import PDFConvert.PDFConvert;
+import com.my.PDFConvert.*;
+import com.my.PDFTool.PDFConvertTool;
+import io.reactivex.rxjavafx.observables.JavaFxObservable;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
@@ -16,15 +17,12 @@ import java.io.File;
 import java.util.*;
 import java.util.prefs.Preferences;
 
+
 /**
  * @author: mayong
  * @createAt: 2020/08/21
  */
-public class MainController extends Application {
-
-    public static void main(String[] args) {
-        launch(args);
-    }
+public class PDFConvertApplication extends Application {
 
     private FileChooser fileChooser = new FileChooser();
 
@@ -53,7 +51,7 @@ public class MainController extends Application {
         vBox.setSpacing(10);
         vBox.setPadding(new Insets(10));
         vBox.getChildren().addAll(getFileSelectButton(), getDirectorySelectButton(), new HBox(){
-             {
+            {
                 setSpacing(8);
                 getChildren().addAll(getStartButton(), getOutputButton());
             }
@@ -68,7 +66,7 @@ public class MainController extends Application {
     }
 
     private FileChooser getFileChooser() {
-        Preferences preferences = Preferences.userNodeForPackage(MainController.class);
+        Preferences preferences = Preferences.userNodeForPackage(PDFConvertApplication.class);
         String filePath = preferences.get("lastFilePath", null);
         if (filePath != null && !filePath.isEmpty()) {
             fileChooser.setInitialDirectory(new File(filePath));
@@ -82,7 +80,7 @@ public class MainController extends Application {
     }
 
     private DirectoryChooser getDirectoryChooser() {
-        Preferences preferences = Preferences.userNodeForPackage(MainController.class);
+        Preferences preferences = Preferences.userNodeForPackage(PDFConvertApplication.class);
         String filePath = preferences.get("lastFilePath", null);
         if (filePath != null && !filePath.isEmpty()) {
             directoryChooser.setInitialDirectory(new File(filePath));
@@ -94,16 +92,28 @@ public class MainController extends Application {
 
     private Button getFileSelectButton() {
         fileSelectButton.setOnAction(event -> {
-            List<File> files = fileChooser.showOpenMultipleDialog(this.primaryStage);
-            if (files != null && !files.isEmpty()) {
-                handleFiles(files);
-            }
+            PDFConvertTool
+                .fileChooser()
+                .initialCurrentDirectory()
+                .filterFileNullOrExists()
+                .extensionFilter("IMAGE FILES", new String[]{"*.jpg", "*.png", "*.jpeg"})
+                .showSingleOnStage(this.primaryStage, (file) -> {
+                    handleFiles(new ArrayList<File>(){{ add(file); }});
+                });
         });
         return fileSelectButton;
     }
 
     private Button getDirectorySelectButton() {
         directorySelectButton.setOnAction(event -> {
+
+//            PDFConvertTool
+//                .directoryChooser()
+//                .initialCurrentDirectory()
+//                .filterDirectoryNullOrExists()
+//                .showOnStage(this.primaryStage, (directory) -> {
+//
+//            });
             File dir = directoryChooser.showDialog(this.primaryStage);
             if (dir == null) {
                 return;
@@ -145,7 +155,7 @@ public class MainController extends Application {
 
     private Button getStartButton() {
         startButton.setOnAction(event -> {
-            String[] filePathList = (String[]) files.stream().map((file) -> file.getPath()).toArray();
+            String[] filePathList = (String[]) files.stream().map(file -> file.getPath()).toArray();
             PDFConvert convert = new PDFConvert(new PDFConvert.ConvertPath(PDFConvert.ConvertPath.Path.Files, String.join(",", filePathList)));
             PDFConvert.Error error = convert.convertToDirectoryPath(this.outputDirectoryPath);
             if (error.equalTo(PDFConvert.Error.noError)) {
