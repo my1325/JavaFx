@@ -104,9 +104,8 @@ public class Application extends javafx.application.Application {
 
     private Button getStartButton() {
         startButton.setOnAction(event -> {
-            String[] filePathList = files.stream().map(file -> file.getPath()).toArray(String[]::new);
             Convert convert = new Convert(new Path(outputDirectoryPath));
-            Error error = convert.convertImageFilesToPDF((File[]) files.toArray());
+            Error error = convert.convertImageFilesToPDF(files.toArray(new File[]{}));
             if (error.equalTo(com.my.pdf.convert.Error.noError)) {
                 showDialog("转换成功");
             } else {
