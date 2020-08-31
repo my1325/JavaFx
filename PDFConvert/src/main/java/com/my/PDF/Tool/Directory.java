@@ -1,19 +1,17 @@
-package com.my.PDFTool;
+package com.my.pdf.tool;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * @author: mayong
  * @createAt: 2020/08/28
  */
-public class PDFDirectory {
+public class Directory {
 
     private static String OUT_FILE_FILTER_KEY = "OUT_FILE_FILTER_KEY";
     private static String EXTENSION_FILE_FILTER_KEY = "Extension_FILE_FILTER_KEY";
@@ -21,16 +19,16 @@ public class PDFDirectory {
 
     private File directory;
     private HashMap<String, List<FileFilter>> fileFilterMap = new HashMap();
-    public PDFDirectory(@NotNull File directory) {
+    public Directory(@NotNull File directory) {
         this.directory = directory;
     }
 
-    public PDFDirectory addFileFilter(FileFilter fileFilter) {
+    public Directory addFileFilter(FileFilter fileFilter) {
         this.getFileFilterList(OUT_FILE_FILTER_KEY).add(fileFilter);
         return this;
     }
 
-    public PDFDirectory setFileExtensionsFilter(List<String> extensionsFilter) {
+    public Directory setFileExtensionsFilter(List<String> extensionsFilter) {
         if (extensionsFilter.size() == 0) {
             return this;
         }
@@ -49,23 +47,31 @@ public class PDFDirectory {
         return this;
     }
 
-    public PDFDirectory onlyFile() {
+    public Directory onlyFile() {
         this.getFileFilterList(ONLY_TYPE_FILE_FILTER_KEY).add((file) -> file.isFile());
         return this;
     }
 
-    public PDFDirectory onlyDirectory() {
+    public Directory onlyDirectory() {
         this.getFileFilterList(ONLY_TYPE_FILE_FILTER_KEY).add((file) -> file.isDirectory());
         return this;
     }
 
     public File[] getFileList() {
+
+        List<FileFilter> filters = getAllFilterList();
+
         File[] files = directory.listFiles();
-//        List<FileFilter> allFliters = fileFilterMap.values();
-//        Arrays.stream(files).filter((file -> {
-//
-//        }));
-        return directory.listFiles();
+        File[] filterFiles = files;
+
+        int filterIndex = 0;
+        while (filterIndex < filters.size()) {
+            FileFilter filter = filters.get(filterIndex);
+            filterFiles = Arrays.stream(files).filter(file -> filter.accept(file)).toArray(File[]::new);
+            filterIndex ++;
+        }
+
+        return filterFiles;
     }
 
     private List<FileFilter> getFileFilterList(String key) {
@@ -75,5 +81,16 @@ public class PDFDirectory {
             fileFilterMap.put(key, filterList);
         }
         return filterList;
+    }
+
+    private List<FileFilter> getAllFilterList() {
+        Iterator iterator = fileFilterMap.entrySet().iterator();
+        ArrayList<FileFilter> filters = new ArrayList();
+        while (iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            List<FileFilter> filterList = (List<FileFilter>) entry.getValue();
+            filters.addAll(filterList);
+        }
+        return filters;
     }
 }

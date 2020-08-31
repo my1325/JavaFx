@@ -1,5 +1,4 @@
-import com.my.PDFConvertUI.PDFConvertApplication;
-import javafx.application.Application;
+import com.my.pdf.convertUI.Application;
 
 /**
  * @author: mayong
@@ -8,6 +7,6 @@ import javafx.application.Application;
 public class MainApplication {
 
     public static void main(String[] args) {
-        Application.launch(PDFConvertApplication.class);
+        javafx.application.Application.launch(Application.class);
     }
 }
