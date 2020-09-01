@@ -1,7 +1,6 @@
 package com.my.pdf.tool;
 
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
+import javafx.scene.control.DialogPane;
 
 /**
  * @author: mayong
@@ -9,11 +8,15 @@ import javafx.stage.FileChooser;
  */
 public class Tool {
 
-    public static com.my.pdf.tool.FileChooser fileChooser() {
-        return new com.my.pdf.tool.FileChooser(new FileChooser());
+    public static FileChooser fileChooser() {
+        return new FileChooser(new javafx.stage.FileChooser());
     }
 
-    public static com.my.pdf.tool.DirectoryChooser directoryChooser() {
-        return new com.my.pdf.tool.DirectoryChooser(new DirectoryChooser());
+    public static DirectoryChooser directoryChooser() {
+        return new DirectoryChooser(new javafx.stage.DirectoryChooser());
+    }
+
+    public static Alert alert() {
+        return new Alert(new DialogPane());
     }
 }

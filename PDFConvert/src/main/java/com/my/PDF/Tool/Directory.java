@@ -39,7 +39,7 @@ public class Directory {
             String extension = "";
             if (extensionDotIndex != -1) {
                 // 存在扩展名
-                extension = fileName.substring(fileName.lastIndexOf("."));
+                extension = fileName.substring(extensionDotIndex + 1);
             }
             return extensionsFilter.contains(extension);
         });
@@ -61,17 +61,20 @@ public class Directory {
 
         List<FileFilter> filters = getAllFilterList();
 
-        File[] files = directory.listFiles();
-        File[] filterFiles = files;
+        File[] filterFiles = directory.listFiles();
 
         int filterIndex = 0;
         while (filterIndex < filters.size()) {
             FileFilter filter = filters.get(filterIndex);
-            filterFiles = Arrays.stream(files).filter(file -> filter.accept(file)).toArray(File[]::new);
+            filterFiles = Arrays.stream(filterFiles).filter(file -> filter.accept(file)).toArray(File[]::new);
             filterIndex ++;
         }
 
         return filterFiles;
+    }
+
+    public File getDirectory() {
+        return directory;
     }
 
     private List<FileFilter> getFileFilterList(String key) {
