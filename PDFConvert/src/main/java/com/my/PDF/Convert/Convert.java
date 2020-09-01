@@ -49,8 +49,10 @@ public class Convert {
             }
             document.close();
         } catch (DocumentException e) {
+            System.out.print(e.toString());
             return Error.convertError;
         } catch (IOException e) {
+            System.out.print(e.toString());
             return Error.fileOrDirectoryCanNotOpen;
         }
 
