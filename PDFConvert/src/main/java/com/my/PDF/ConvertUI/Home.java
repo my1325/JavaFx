@@ -36,11 +36,17 @@ public class Home extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
-        primaryStage.setScene(new Scene(getSceneNode()));
+
+        Parent rootNode = getSceneNode();
+        rootNode.layoutBoundsProperty().addListener((observable, oldValue, newValue) -> {
+            primaryStage.setWidth(newValue.getWidth());
+            primaryStage.setHeight(newValue.getHeight());
+        });
+        primaryStage.setScene(new Scene(rootNode));
         primaryStage.show();
     }
 
-    private Parent getSceneNode() {
+    private VBox getSceneNode() {
         VBox rootBox = new VBox();
         rootBox.setSpacing(20);
         rootBox.setPadding(new Insets(20));
