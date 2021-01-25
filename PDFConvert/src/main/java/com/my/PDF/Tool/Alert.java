@@ -31,7 +31,7 @@ public class Alert {
     public interface AlertContentCall {
         public Node content();
     }
-
+    
     public Alert setContent(AlertContentCall contentCall) {
         pane.setContent(contentCall.content());
         return this;
